@@ -69,6 +69,51 @@ You can access Elasticsearch for querying logs:
 - **Fluent Bit:** Collects the logs from NGINX and forwards them to Elasticsearch.
 - **Elasticsearch:** Stores the logs in a searchable database for analysis.
 
+
+### After everything runs you can check your logging
+
+#### First you should do actions in nginx
+#### Check if the index exists
+```bash
+curl -X GET "http://localhost:8090"
+```
+
+#### Create index and mapping in elasticsearch
+```bash
+curl -X PUT "http://localhost:8091/nginx-logs" -H 'Content-Type: application/json' -d'
+              {
+                "mappings": {
+                  "properties": {
+                    "timestamp": { "type": "date" },
+                    "status": { "type": "keyword" },
+                    "method": { "type": "keyword" },
+                    "url": { "type": "text" },
+                    "user_agent": { "type": "text" }
+                  }
+                }
+              }'
+```
+
+
+#### Check if the index exists
+```bash
+curl -X GET "http://localhost:8091/_cat/indices?v=true&h=index"
+```
+
+#### Check the mapping
+```bash
+curl -X GET "http://localhost:9200/nginx-logs/_mapping?pretty"
+```
+
+#### Look up the log entries in elasticsearch
+```bash
+curl -X GET "http://localhost:9200/nginx-logs/_search?pretty" -H 'Content-Type: application/json' -d '
+{
+  "size": 10,
+  "sort": [{ "timestamp": { "order": "desc" } }]
+}'
+```
+
 ## Cleanup
 
 To clean up the deployed resources, run:
