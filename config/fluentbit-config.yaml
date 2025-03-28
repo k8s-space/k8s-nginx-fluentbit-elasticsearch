@@ -24,4 +24,4 @@ data:
         Host          ${FLUENT_ELASTICSEARCH_HOST}
         Port          ${FLUENT_ELASTICSEARCH_PORT}
         Index         ${FLUENT_ELASTICSEARCH_INDEX}
-        Logstash_Format On        
+        Suppress_Type_Name On
